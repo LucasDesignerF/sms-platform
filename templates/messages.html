@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Visualize e gerencie suas mensagens SMS">
+    <meta name="theme-color" content="#111B21">
+    
+    <title>Mensagens - SMS Platform</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://imgur.com/0JbrAxh.png">
+    <link rel="apple-touch-icon" href="https://imgur.com/0JbrAxh.png">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { DEFAULT: '#111B21', 400: '#111B21', 500: '#0E171F' },
+                        surface: { DEFAULT: '#1E2A35', 200: '#1E2A35' },
+                        primary: { DEFAULT: '#00A884', 600: '#00A884', 700: '#008A6A' },
+                        error: { DEFAULT: '#E94560' },
+                    },
+                    fontFamily: { 'sans': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #111B21; min-height: 100vh; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #1E2A35; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00A884; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #008A6A; }
+        
+        .message-hover:hover { background: rgba(30, 42, 53, 0.5); }
+        .number-card-hover { transition: all 0.3s ease; }
+        .number-card-hover:hover { background: #2A3942; transform: translateY(-2px); }
+        .message-bubble { background: #1E2A35; border-radius: 12px; border-left: 3px solid #00A884; }
+        .badge-new { animation: pulse 2s ease-in-out infinite; }
+        .btn-transition { transition: all 0.2s ease; }
+        .btn-transition:hover { transform: translateY(-1px); }
+        .message-enter { animation: messageSlide 0.3s ease-out; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes messageSlide { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .gradient-primary { background: linear-gradient(135deg, #00A884 0%, #008A6A 100%); }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 400px;
+            background: #1E2A35;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #00A884;
+            animation: slideInRight 0.3s ease-out;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .toast-success { border-left-color: #00A884; }
+        .toast-error { border-left-color: #E94560; }
+        .toast-warning { border-left-color: #FFB74D; }
+        
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .toast-success .toast-icon { background: rgba(0, 168, 132, 0.2); color: #00A884; }
+        .toast-error .toast-icon { background: rgba(233, 69, 96, 0.2); color: #E94560; }
+        .toast-warning .toast-icon { background: rgba(255, 183, 77, 0.2); color: #FFB74D; }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="bg-dark-500 border-b border-surface-200 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/dashboard" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <i class='bx bx-message-square-dots text-3xl text-primary-600'></i>
+                        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                    </div>
+                    <span class="font-bold text-xl bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                        SMS<span class="text-white">Platform</span>
+                    </span>
+                </a>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-home-alt'></i> Dashboard
+                    </a>
+                    <a href="/numbers" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-phone'></i> Meus Números
+                    </a>
+                    <a href="/messages" class="text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-envelope'></i> Mensagens
+                    </a>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-gray-300 hover:text-primary-400 transition">
+                            <i class='bx bx-user-circle text-2xl'></i>
+                            <span>{{ username }}</span>
+                            <i class='bx bx-chevron-down text-sm'></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-400 rounded-xl shadow-2xl border border-surface-200 hidden group-hover:block overflow-hidden">
+                            <a href="/profile" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-surface-200 transition">
+                                <i class='bx bx-user'></i> Perfil
+                            </a>
+                            <div class="border-t border-surface-200"></div>
+                            <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-error hover:bg-surface-200 transition">
+                                <i class='bx bx-log-out'></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="mobileMenuButton" class="md:hidden text-gray-300 focus:outline-none hover:text-primary-400 transition">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobileMenu" class="hidden md:hidden bg-dark-500 border-t border-surface-200">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Dashboard</a>
+                <a href="/numbers" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Meus Números</a>
+                <a href="/messages" class="flex items-center gap-3 px-3 py-2 text-primary-400 bg-surface-200 rounded-lg transition">Mensagens</a>
+                <a href="/profile" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Perfil</a>
+                <div class="border-t border-surface-200 my-2"></div>
+                <a href="/logout" class="flex items-center gap-3 px-3 py-2 text-error hover:bg-surface-200 rounded-lg transition">Sair</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white">Mensagens</h1>
+                <p class="text-gray-400 mt-2">Visualize e gerencie seus SMS recebidos</p>
+            </div>
+            <div id="checkMessagesContainer"></div>
+        </div>
+        
+        <!-- Select Number Section -->
+        <div id="selectNumberSection" style="display: {{ show_number_select }};">
+            <div class="bg-dark-400 rounded-xl shadow-lg p-5 md:p-6 mb-8 border border-surface-200">
+                <h2 class="text-lg font-semibold text-white mb-4">Selecione um número para ver as mensagens</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    {{ numbers_grid }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messages Section -->
+        <div id="messagesSection" style="display: {{ show_messages }};">
+            <!-- Current Number Info -->
+            <div class="gradient-primary rounded-xl shadow-lg p-5 md:p-6 text-white mb-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <p class="text-sm opacity-90 flex items-center gap-2">
+                            <i class='bx bx-mobile-alt'></i> Número selecionado
+                        </p>
+                        <p class="text-2xl md:text-3xl font-mono font-bold mt-1">+{{ current_number.number }}</p>
+                        <p class="text-sm opacity-90 mt-1 flex items-center gap-2">
+                            <i class='bx bx-flag'></i> {{ current_number.country }}
+                        </p>
+                    </div>
+                    <button id="checkMessagesBtn" onclick="checkMessagesNow()" class="bg-white/20 hover:bg-white/30 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-lg transition btn-transition flex items-center gap-2">
+                        <i class='bx bx-refresh text-xl'></i>
+                        Verificar Novas
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Messages List -->
+            <div class="bg-dark-400 rounded-xl shadow-lg overflow-hidden border border-surface-200">
+                <div class="px-5 md:px-6 py-4 border-b border-surface-200">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class='bx bx-history'></i> Histórico de Mensagens
+                    </h2>
+                </div>
+                <div class="divide-y divide-surface-200">
+                    {{ messages_list }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-500 border-t border-surface-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center text-gray-500 text-sm">
+                <p>&copy; 2025 SMS Platform - Números Temporários para Receber SMS</p>
+                <p class="mt-1">
+                    Desenvolvido com <i class='bx bx-heart text-error'></i> por 
+                    <span class="text-primary-400">Nexus Platform</span> 
+                    por <span class="text-primary-400">© LucasDesigner</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = 'bx-check';
+            if (type === 'error') icon = 'bx-x';
+            if (type === 'warning') icon = 'bx-error';
+            
+            toast.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="toast-icon">
+                        <i class='bx ${icon}'></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-white text-sm font-medium">${type === 'success' ? 'Sucesso!' : type === 'error' ? 'Erro!' : 'Atenção!'}</p>
+                        <p class="text-gray-300 text-sm mt-1">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 hover:text-gray-300 transition">
+                        <i class='bx bx-x text-xl'></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+        
+        // Check messages function
+        async function checkMessagesNow() {
+            const numberId = {{ current_number.id if current_number else 0 }};
+            if (!numberId) return;
+            
+            const button = document.getElementById('checkMessagesBtn');
+            if (!button) return;
+            
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="bx bx-loader-alt bx-spin text-xl"></i> Verificando...';
+            button.disabled = true;
+            
+            try {
+                const response = await fetch(`/messages/check/${numberId}`, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success && data.new_messages > 0) {
+                    showToast(`${data.new_messages} nova(s) mensagem(ns) encontrada(s)!`, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else if (data.success) {
+                    showToast('Nenhuma nova mensagem', 'warning');
+                }
+            } catch (error) {
+                showToast('Erro ao verificar mensagens', 'error');
+            } finally {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }
+        }
+        
+        // Auto-refresh every 30 seconds if on messages page with a number selected
+        const messagesSection = document.getElementById('messagesSection');
+        if (messagesSection && messagesSection.style.display !== 'none') {
+            let autoRefreshInterval = setInterval(() => {
+                checkMessagesNow();
+            }, 30000);
+            
+            window.addEventListener('beforeunload', () => {
+                if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            });
+        }
+        
+        // Add animation delay to messages
+        document.querySelectorAll('.message-enter').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.05}s`;
+        });
+    </script>
+</body>
+</html>

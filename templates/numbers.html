@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Gerencie seus números temporários SMS">
+    <meta name="theme-color" content="#111B21">
+    
+    <title>Meus Números - SMS Platform</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://imgur.com/0JbrAxh.png">
+    <link rel="apple-touch-icon" href="https://imgur.com/0JbrAxh.png">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            DEFAULT: '#111B21',
+                            400: '#111B21',
+                            500: '#0E171F',
+                        },
+                        surface: {
+                            DEFAULT: '#1E2A35',
+                            200: '#1E2A35',
+                        },
+                        primary: {
+                            DEFAULT: '#00A884',
+                            600: '#00A884',
+                            700: '#008A6A',
+                        },
+                        error: {
+                            DEFAULT: '#E94560',
+                        },
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #111B21;
+            min-height: 100vh;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1E2A35;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00A884;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #008A6A;
+        }
+        
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Modal animation */
+        .modal-enter {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Button transition */
+        .btn-transition {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-transition:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Number card gradient */
+        .number-card-header {
+            background: linear-gradient(135deg, #00A884 0%, #008A6A 100%);
+        }
+        
+        /* Expired card */
+        .expired-card {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="bg-dark-500 border-b border-surface-200 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/dashboard" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <i class='bx bx-message-square-dots text-3xl text-primary-600'></i>
+                        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                    </div>
+                    <span class="font-bold text-xl bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                        SMS<span class="text-white">Platform</span>
+                    </span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-home-alt'></i> Dashboard
+                    </a>
+                    <a href="/numbers" class="text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-phone'></i> Meus Números
+                    </a>
+                    <a href="/messages" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-envelope'></i> Mensagens
+                    </a>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-gray-300 hover:text-primary-400 transition">
+                            <i class='bx bx-user-circle text-2xl'></i>
+                            <span>{{ username }}</span>
+                            <i class='bx bx-chevron-down text-sm'></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-400 rounded-xl shadow-2xl border border-surface-200 hidden group-hover:block overflow-hidden">
+                            <a href="/profile" class="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-surface-200 transition">
+                                <i class='bx bx-user'></i> Perfil
+                            </a>
+                            <div class="border-t border-surface-200"></div>
+                            <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-error hover:bg-surface-200 transition">
+                                <i class='bx bx-log-out'></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuButton" class="md:hidden text-gray-300 focus:outline-none hover:text-primary-400 transition">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-dark-500 border-t border-surface-200">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Dashboard</a>
+                <a href="/numbers" class="flex items-center gap-3 px-3 py-2 text-primary-400 bg-surface-200 rounded-lg transition">Meus Números</a>
+                <a href="/messages" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Mensagens</a>
+                <a href="/profile" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Perfil</a>
+                <div class="border-t border-surface-200 my-2"></div>
+                <a href="/logout" class="flex items-center gap-3 px-3 py-2 text-error hover:bg-surface-200 rounded-lg transition">Sair</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white">Meus Números</h1>
+                <p class="text-gray-400 mt-2">Gerencie seus números temporários</p>
+            </div>
+            <button onclick="openAcquireModal()" class="bg-primary-600 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-lg hover:bg-primary-700 transition btn-transition flex items-center gap-2">
+                <i class='bx bx-plus text-xl'></i>
+                Novo Número
+            </button>
+        </div>
+        
+        {% if numbers %}
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {% for number in numbers %}
+            <div class="bg-dark-400 rounded-xl shadow-lg overflow-hidden card-hover border border-surface-200 {% if not number.is_active %}expired-card{% endif %}">
+                <div class="number-card-header px-4 py-3 text-white">
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-lg font-bold">+{{ number.number }}</span>
+                        <span class="text-xs bg-white/20 px-2 py-1 rounded">{{ number.country }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-4">
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Adquirido:</span>
+                            <span class="text-gray-300">{{ number.assigned_at }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Status:</span>
+                            <span class="{% if number.is_active %}text-primary-600{% else %}text-gray-500{% endif %} font-medium">
+                                {% if number.is_active %}Ativo{% else %}Expirado{% endif %}
+                            </span>
+                        </div>
+                        {% if number.expires_at %}
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">Expira:</span>
+                            <span class="{% if number.is_expired %}text-error{% else %}text-gray-300{% endif %}">
+                                {{ number.expires_at }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <a href="/messages?number_id={{ number.id }}" class="flex-1 bg-primary-600/20 text-primary-600 text-center py-2 rounded-lg hover:bg-primary-600/30 transition">
+                            <i class='bx bx-message-detail'></i> SMS
+                        </a>
+                        <button onclick="checkMessages({{ number.id }})" class="flex-1 bg-surface-200 text-gray-300 py-2 rounded-lg hover:bg-surface-100 transition">
+                            <i class='bx bx-refresh'></i> Verificar
+                        </button>
+                        {% if number.is_active %}
+                        <button onclick="deleteNumber({{ number.id }})" class="bg-error/20 text-error w-10 rounded-lg hover:bg-error/30 transition">
+                            <i class='bx bx-trash'></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-dark-400 rounded-xl shadow-lg p-12 text-center border border-surface-200">
+            <i class='bx bx-phone-off text-6xl text-gray-500 mb-4 block'></i>
+            <h3 class="text-xl font-semibold text-white mb-2">Nenhum número adquirido</h3>
+            <p class="text-gray-400 mb-6">Comece adquirindo seu primeiro número temporário</p>
+            <button onclick="openAcquireModal()" class="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition btn-transition">
+                Adquirir Número
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Acquire Number Modal -->
+    <div id="acquireModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
+        <div class="bg-dark-400 rounded-2xl max-w-md w-full mx-4 p-6 modal-enter border border-surface-200">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-white">Adquirir Número</h3>
+                <button onclick="closeAcquireModal()" class="text-gray-400 hover:text-gray-300 transition">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Selecione o País</label>
+                <select id="countrySelect" class="w-full px-4 py-3 bg-dark-500 border border-surface-200 rounded-xl text-white focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-600/20 transition">
+                    <option value="US">🇺🇸 Estados Unidos</option>
+                    <option value="UK">🇬🇧 Reino Unido</option>
+                    <option value="BR">🇧🇷 Brasil</option>
+                    <option value="CA">🇨🇦 Canadá</option>
+                    <option value="AU">🇦🇺 Austrália</option>
+                    <option value="DE">🇩🇪 Alemanha</option>
+                    <option value="FR">🇫🇷 França</option>
+                    <option value="ES">🇪🇸 Espanha</option>
+                    <option value="IT">🇮🇹 Itália</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="acquireNumber()" class="flex-1 bg-primary-600 text-white py-3 rounded-xl hover:bg-primary-700 transition btn-transition">
+                    Adquirir
+                </button>
+                <button onclick="closeAcquireModal()" class="flex-1 bg-surface-200 text-gray-300 py-3 rounded-xl hover:bg-surface-100 transition">
+                    Cancelar
+                </button>
+            </div>
+            
+            <div id="acquireLoading" class="hidden mt-4 text-center">
+                <div class="animate-pulse text-primary-600">
+                    <i class='bx bx-loader-alt bx-spin text-2xl'></i>
+                    <p class="text-sm mt-1">Buscando número disponível...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-500 border-t border-surface-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center text-gray-500 text-sm">
+                <p>&copy; 2025 SMS Platform - Números Temporários para Receber SMS</p>
+                <p class="mt-1">
+                    Desenvolvido com <i class='bx bx-heart text-error'></i> por 
+                    <span class="text-primary-400">Nexus Platform</span> 
+                    por <span class="text-primary-400">© LucasDesigner</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // Modal functions
+        function openAcquireModal() {
+            document.getElementById('acquireModal').classList.remove('hidden');
+            document.getElementById('acquireModal').classList.add('flex');
+        }
+        
+        function closeAcquireModal() {
+            document.getElementById('acquireModal').classList.add('hidden');
+            document.getElementById('acquireModal').classList.remove('flex');
+            document.getElementById('acquireLoading').classList.add('hidden');
+        }
+        
+        async function acquireNumber() {
+            const country = document.getElementById('countrySelect').value;
+            const loading = document.getElementById('acquireLoading');
+            const buttons = document.querySelectorAll('#acquireModal button');
+            
+            loading.classList.remove('hidden');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            try {
+                const formData = new URLSearchParams();
+                formData.append('country', country);
+                
+                const response = await fetch('/numbers/acquire', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao adquirir número: ' + error.message);
+            } finally {
+                loading.classList.add('hidden');
+                buttons.forEach(btn => btn.disabled = false);
+                closeAcquireModal();
+            }
+        }
+        
+        async function checkMessages(numberId) {
+            try {
+                const response = await fetch(`/messages/check/${numberId}`, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success && data.new_messages > 0) {
+                    alert(`${data.new_messages} nova(s) mensagem(ns) recebida(s)!`);
+                    setTimeout(() => location.reload(), 1000);
+                } else if (data.success) {
+                    alert('Nenhuma nova mensagem');
+                }
+            } catch (error) {
+                alert('Erro ao verificar mensagens');
+            }
+        }
+        
+        async function deleteNumber(numberId) {
+            if (confirm('⚠️ Tem certeza que deseja remover este número? Esta ação não pode ser desfeita.')) {
+                try {
+                    const response = await fetch(`/numbers/${numberId}/delete`, { method: 'POST' });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Erro ao remover número');
+                    }
+                } catch (error) {
+                    alert('Erro ao remover número');
+                }
+            }
+        }
+        
+        // Close modal on outside click
+        const acquireModal = document.getElementById('acquireModal');
+        if (acquireModal) {
+            acquireModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAcquireModal();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

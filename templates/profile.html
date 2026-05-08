@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Gerencie seu perfil na SMS Platform">
+    <meta name="theme-color" content="#111B21">
+    
+    <title>Meu Perfil - SMS Platform</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://imgur.com/0JbrAxh.png">
+    <link rel="apple-touch-icon" href="https://imgur.com/0JbrAxh.png">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            DEFAULT: '#111B21',
+                            400: '#111B21',
+                            500: '#0E171F',
+                        },
+                        surface: {
+                            DEFAULT: '#1E2A35',
+                            200: '#1E2A35',
+                        },
+                        primary: {
+                            DEFAULT: '#00A884',
+                            600: '#00A884',
+                            700: '#008A6A',
+                        },
+                        error: {
+                            DEFAULT: '#E94560',
+                        },
+                        warning: {
+                            DEFAULT: '#FFB74D',
+                            500: '#FFB74D',
+                        },
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #111B21;
+            min-height: 100vh;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1E2A35;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00A884;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #008A6A;
+        }
+        
+        /* Glass effect for card */
+        .profile-header {
+            background: linear-gradient(135deg, #00A884 0%, #008A6A 100%);
+        }
+        
+        /* Input focus effect */
+        .input-focus:focus {
+            border-color: #00A884;
+            box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
+            outline: none;
+        }
+        
+        /* Button transition */
+        .btn-transition {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-transition:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Modal animation */
+        .modal-enter {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Plan card */
+        .plan-card {
+            background: rgba(30, 42, 53, 0.5);
+            border: 1px solid rgba(0, 168, 132, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Navbar -->
+    <nav class="bg-dark-500 border-b border-surface-200 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/dashboard" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <i class='bx bx-message-square-dots text-3xl text-primary-600'></i>
+                        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                    </div>
+                    <span class="font-bold text-xl bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
+                        SMS<span class="text-white">Platform</span>
+                    </span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/dashboard" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-home-alt'></i> Dashboard
+                    </a>
+                    <a href="/numbers" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-phone'></i> Meus Números
+                    </a>
+                    <a href="/messages" class="text-gray-300 hover:text-primary-400 transition flex items-center gap-2">
+                        <i class='bx bx-envelope'></i> Mensagens
+                    </a>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-primary-400 transition">
+                            <i class='bx bx-user-circle text-2xl'></i>
+                            <span>{{ username }}</span>
+                            <i class='bx bx-chevron-down text-sm'></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-dark-400 rounded-xl shadow-2xl border border-surface-200 hidden group-hover:block overflow-hidden">
+                            <a href="/profile" class="flex items-center gap-3 px-4 py-3 text-primary-400 bg-surface-200 transition">
+                                <i class='bx bx-user'></i> Perfil
+                            </a>
+                            <div class="border-t border-surface-200"></div>
+                            <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-error hover:bg-surface-200 transition">
+                                <i class='bx bx-log-out'></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuButton" class="md:hidden text-gray-300 focus:outline-none hover:text-primary-400 transition">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-dark-500 border-t border-surface-200">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Dashboard</a>
+                <a href="/numbers" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Meus Números</a>
+                <a href="/messages" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition">Mensagens</a>
+                <a href="/profile" class="flex items-center gap-3 px-3 py-2 text-primary-400 bg-surface-200 rounded-lg transition">Perfil</a>
+                <div class="border-t border-surface-200 my-2"></div>
+                <a href="/logout" class="flex items-center gap-3 px-3 py-2 text-error hover:bg-surface-200 rounded-lg transition">Sair</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="animate-fade-in">
+            <!-- Profile Header -->
+            <div class="profile-header rounded-2xl shadow-xl overflow-hidden">
+                <div class="px-6 md:px-8 py-8 text-white">
+                    <div class="flex flex-col sm:flex-row items-center gap-6">
+                        <div class="w-24 h-24 bg-white/20 backdrop-blur rounded-full flex items-center justify-center border-2 border-white/30">
+                            <i class='bx bx-user-circle text-6xl text-white'></i>
+                        </div>
+                        <div class="text-center sm:text-left">
+                            <h1 class="text-2xl md:text-3xl font-bold">{{ username }}</h1>
+                            <p class="text-white/80 mt-1">{{ email }}</p>
+                            <p class="text-sm text-white/60 mt-2">
+                                <i class='bx bx-calendar'></i> Membro desde {{ member_since }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 space-y-6">
+                <!-- Plan Info -->
+                <div class="plan-card rounded-xl p-6 backdrop-blur">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-300">Plano Atual</h3>
+                            <p class="text-3xl font-bold text-primary-600 mt-1">{{ plan }}</p>
+                            {% if plan_expires %}
+                            <p class="text-sm text-gray-500 mt-1">
+                                <i class='bx bx-time'></i> Expira em: {{ plan_expires }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% if plan == "Gratuito" %}
+                        <button onclick="showUpgrade()" class="bg-primary-600 text-white px-5 py-2 rounded-lg hover:bg-primary-700 transition btn-transition flex items-center gap-2">
+                            <i class='bx bx-crown'></i> Fazer Upgrade
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Update Form -->
+                <div class="bg-dark-400 rounded-xl shadow-lg p-6 border border-surface-200">
+                    <h2 class="text-xl font-bold text-white mb-6">Informações da Conta</h2>
+                    
+                    <form id="profileForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                <i class='bx bx-envelope'></i> Email
+                            </label>
+                            <input type="email" id="email" value="{{ email }}" 
+                                   class="w-full px-4 py-3 bg-dark-500 border border-surface-200 rounded-xl text-white placeholder-gray-500 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 transition-all input-focus">
+                        </div>
+                        
+                        <div class="border-t border-surface-200 pt-6">
+                            <h3 class="text-lg font-semibold text-white mb-4">Alterar Senha</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Senha Atual</label>
+                                    <input type="password" id="currentPassword" 
+                                           class="w-full px-4 py-3 bg-dark-500 border border-surface-200 rounded-xl text-white placeholder-gray-500 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 transition-all input-focus"
+                                           placeholder="Digite sua senha atual">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Nova Senha</label>
+                                    <input type="password" id="newPassword" 
+                                           class="w-full px-4 py-3 bg-dark-500 border border-surface-200 rounded-xl text-white placeholder-gray-500 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 transition-all input-focus"
+                                           placeholder="Mínimo 6 caracteres">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Confirmar Nova Senha</label>
+                                    <input type="password" id="confirmPassword" 
+                                           class="w-full px-4 py-3 bg-dark-500 border border-surface-200 rounded-xl text-white placeholder-gray-500 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 transition-all input-focus"
+                                           placeholder="Digite a nova senha novamente">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button type="submit" class="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition btn-transition flex items-center justify-center gap-2">
+                                <i class='bx bx-save'></i> Salvar Alterações
+                            </button>
+                            <button type="button" onclick="resetForm()" class="bg-surface-200 text-gray-300 px-6 py-2 rounded-lg hover:bg-surface-100 transition flex items-center justify-center gap-2">
+                                <i class='bx bx-refresh'></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="bg-dark-400 rounded-xl shadow-lg p-6 border border-error/20">
+                    <h3 class="text-lg font-semibold text-error mb-4 flex items-center gap-2">
+                        <i class='bx bx-error-circle'></i> Zona de Perigo
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-4">Ao deletar sua conta, todos os seus números e mensagens serão permanentemente removidos.</p>
+                    <button onclick="deleteAccount()" class="bg-error text-white px-5 py-2 rounded-lg hover:bg-error/80 transition btn-transition flex items-center gap-2">
+                        <i class='bx bx-trash'></i> Deletar Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upgrade Modal -->
+    <div id="upgradeModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
+        <div class="bg-dark-400 rounded-2xl max-w-md w-full mx-4 p-6 modal-enter border border-surface-200">
+            <div class="text-center mb-4">
+                <div class="w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto">
+                    <i class='bx bx-crown text-5xl text-yellow-500'></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mt-3">Upgrade para Premium</h3>
+                <p class="text-gray-400 text-sm mt-1">Obtenha benefícios exclusivos</p>
+            </div>
+            
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3 text-gray-300">
+                    <i class='bx bx-check-circle text-primary-600 text-xl'></i>
+                    <span>Até 20 números simultâneos</span>
+                </div>
+                <div class="flex items-center gap-3 text-gray-300">
+                    <i class='bx bx-check-circle text-primary-600 text-xl'></i>
+                    <span>Números válidos por 30 dias</span>
+                </div>
+                <div class="flex items-center gap-3 text-gray-300">
+                    <i class='bx bx-check-circle text-primary-600 text-xl'></i>
+                    <span>Suporte prioritário 24/7</span>
+                </div>
+                <div class="flex items-center gap-3 text-gray-300">
+                    <i class='bx bx-check-circle text-primary-600 text-xl'></i>
+                    <span>Sem anúncios</span>
+                </div>
+            </div>
+            
+            <div class="text-center mb-6">
+                <p class="text-3xl font-bold text-primary-600">R$ 19,90</p>
+                <p class="text-gray-500 text-sm">/mês</p>
+            </div>
+            
+            <button onclick="processUpgrade()" class="w-full bg-primary-600 text-white py-3 rounded-xl hover:bg-primary-700 transition btn-transition">
+                Assinar Agora
+            </button>
+            
+            <button onclick="closeUpgradeModal()" class="w-full mt-3 bg-surface-200 text-gray-300 py-2 rounded-xl hover:bg-surface-100 transition">
+                Cancelar
+            </button>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-500 border-t border-surface-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center text-gray-500 text-sm">
+                <p>&copy; 2025 SMS Platform - Números Temporários para Receber SMS</p>
+                <p class="mt-1">
+                    Desenvolvido com <i class='bx bx-heart text-error'></i> por 
+                    <span class="text-primary-400">Nexus Platform</span> 
+                    por <span class="text-primary-400">© LucasDesigner</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // Profile form submission
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('As senhas não coincidem');
+                return;
+            }
+            
+            if (newPassword && newPassword.length < 6) {
+                alert('A nova senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+            
+            const formData = new URLSearchParams();
+            formData.append('email', email);
+            if (currentPassword && newPassword) {
+                formData.append('current_password', currentPassword);
+                formData.append('new_password', newPassword);
+            }
+            
+            try {
+                const response = await fetch('/profile/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Perfil atualizado com sucesso!');
+                    location.reload();
+                } else {
+                    alert('Erro: ' + data.error);
+                }
+            } catch (error) {
+                alert('Erro ao atualizar perfil');
+            }
+        });
+        
+        function resetForm() {
+            document.getElementById('email').value = '{{ email }}';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        // Upgrade modal functions
+        function showUpgrade() {
+            document.getElementById('upgradeModal').classList.remove('hidden');
+            document.getElementById('upgradeModal').classList.add('flex');
+        }
+        
+        function closeUpgradeModal() {
+            document.getElementById('upgradeModal').classList.add('hidden');
+            document.getElementById('upgradeModal').classList.remove('flex');
+        }
+        
+        function processUpgrade() {
+            alert('Funcionalidade em desenvolvimento. Em breve disponível!');
+            closeUpgradeModal();
+        }
+        
+        function deleteAccount() {
+            if (confirm('⚠️ Tem certeza que deseja deletar sua conta? Esta ação é irreversível e todos os seus dados serão perdidos!')) {
+                alert('Para deletar sua conta, entre em contato com o suporte.');
+            }
+        }
+        
+        // Close modal on outside click
+        const upgradeModal = document.getElementById('upgradeModal');
+        if (upgradeModal) {
+            upgradeModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeUpgradeModal();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

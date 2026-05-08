@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="SMS Platform - Receba SMS online gratuitamente com números temporários. Proteja sua privacidade e receba mensagens de verificação de forma segura e anônima.">
+    <meta name="keywords" content="sms, número temporário, receber sms, verificação, privacidade, sms online">
+    <meta name="author" content="SMS Platform">
+    <meta name="theme-color" content="#111B21">
+    
+    <title>SMS Platform - Receba SMS Online Gratuitamente</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://imgur.com/0JbrAxh.png">
+    <link rel="apple-touch-icon" href="https://imgur.com/0JbrAxh.png">
+    
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            DEFAULT: '#111B21',
+                            50: '#1E2A35',
+                            100: '#1C2A36',
+                            200: '#182531',
+                            300: '#15212B',
+                            400: '#111B21',
+                            500: '#0E171F',
+                            600: '#0A1218',
+                            700: '#070E12',
+                            800: '#04090C',
+                            900: '#010406',
+                        },
+                        surface: {
+                            DEFAULT: '#1E2A35',
+                            50: '#2A3942',
+                            100: '#253640',
+                            200: '#1E2A35',
+                            300: '#18232C',
+                            400: '#121B23',
+                        },
+                        primary: {
+                            DEFAULT: '#00A884',
+                            50: '#E8F9F5',
+                            100: '#C5F0E5',
+                            200: '#A2E7D5',
+                            300: '#7FDEC5',
+                            400: '#5CD5B5',
+                            500: '#39CCA5',
+                            600: '#00A884',
+                            700: '#008A6A',
+                            800: '#006C52',
+                            900: '#004E3A',
+                        },
+                        accent: {
+                            DEFAULT: '#25A3F0',
+                            600: '#25A3F0',
+                        },
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-in-right': 'slideInRight 0.4s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(100%)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #111B21;
+            color: #E1E9F0;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1E2A35;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #3B4A54;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00A884;
+        }
+        
+        /* Gradients */
+        .gradient-primary {
+            background: linear-gradient(135deg, #00A884 0%, #008A6A 100%);
+        }
+        
+        .gradient-dark {
+            background: linear-gradient(135deg, #1E2A35 0%, #111B21 100%);
+        }
+        
+        /* Card Hover Effect */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: #00A88433;
+        }
+        
+        /* Glass Effect */
+        .glass {
+            background: rgba(30, 42, 53, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 168, 132, 0.1);
+        }
+        
+        /* Mobile Menu Animation */
+        .mobile-menu-open {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .stats-grid {
+                gap: 1rem;
+            }
+            
+            .features-grid {
+                gap: 1rem;
+            }
+        }
+        
+        /* Touch-friendly buttons */
+        @media (hover: hover) {
+            .hover-scale:hover {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            border: 3px solid #1E2A35;
+            border-top-color: #00A884;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-dark-400 antialiased">
+    <!-- Navbar -->
+    <nav class="bg-dark-500 border-b border-surface-200 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="relative">
+                        <i class='bx bx-message-square-dots text-3xl text-primary-600 group-hover:text-primary-500 transition-colors'></i>
+                        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                            SMS<span class="text-white">Platform</span>
+                        </span>
+                    </div>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/" class="text-gray-300 hover:text-primary-400 transition-all duration-200 flex items-center gap-2 group">
+                        <i class='bx bx-home-alt text-lg'></i>
+                        <span>Início</span>
+                    </a>
+                    <a href="#features" class="text-gray-300 hover:text-primary-400 transition-all duration-200 flex items-center gap-2 group">
+                        <i class='bx bx-star text-lg'></i>
+                        <span>Recursos</span>
+                    </a>
+                    <a href="#how-it-works" class="text-gray-300 hover:text-primary-400 transition-all duration-200 flex items-center gap-2 group">
+                        <i class='bx bx-help-circle text-lg'></i>
+                        <span>Como Funciona</span>
+                    </a>
+                    <a href="#faq" class="text-gray-300 hover:text-primary-400 transition-all duration-200 flex items-center gap-2 group">
+                        <i class='bx bx-question-mark text-lg'></i>
+                        <span>FAQ</span>
+                    </a>
+                    <a href="/login" class="text-gray-300 hover:text-primary-400 transition-colors flex items-center gap-2">
+                        <i class='bx bx-log-in'></i>
+                        Entrar
+                    </a>
+                    <a href="/register" class="gradient-primary px-5 py-2 rounded-lg font-medium flex items-center gap-2 hover:shadow-lg hover:shadow-primary-600/30 transition-all">
+                        <i class='bx bx-user-plus'></i>
+                        Criar Conta
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuButton" class="md:hidden text-gray-300 focus:outline-none hover:text-primary-400 transition-colors">
+                    <i class='bx bx-menu text-2xl'></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-dark-500 border-t border-surface-200 shadow-xl">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="/" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-home-alt'></i> Início
+                </a>
+                <a href="#features" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-star'></i> Recursos
+                </a>
+                <a href="#how-it-works" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-help-circle'></i> Como Funciona
+                </a>
+                <a href="#faq" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-question-mark'></i> FAQ
+                </a>
+                <div class="border-t border-surface-200 my-2"></div>
+                <a href="/login" class="flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-log-in'></i> Entrar
+                </a>
+                <a href="/register" class="flex items-center gap-3 px-3 py-2 text-primary-400 hover:bg-surface-200 rounded-lg transition-colors">
+                    <i class='bx bx-user-plus'></i> Criar Conta
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden">
+        <div class="absolute inset-0 gradient-primary opacity-10"></div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%2300A884" fill-opacity="0.03"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-32 relative">
+            <div class="text-center">
+                <div class="inline-flex items-center gap-2 bg-primary-600/10 backdrop-blur-sm border border-primary-600/20 rounded-full px-4 py-2 mb-6 md:mb-8 animate-fade-in">
+                    <div class="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+                    <span class="text-primary-400 text-xs sm:text-sm font-medium">✨ Mais de 10.000 mensagens recebidas hoje</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 animate-fade-in">
+                    <span class="bg-gradient-to-r from-primary-400 via-primary-500 to-accent-600 bg-clip-text text-transparent">
+                        Receba SMS Online
+                    </span>
+                    <span class="block text-xl sm:text-2xl md:text-3xl mt-3 md:mt-4 text-gray-300">
+                        De forma rápida, segura e anônima
+                    </span>
+                </h1>
+                
+                <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-10 text-gray-400 max-w-3xl mx-auto px-4 animate-fade-in">
+                    Números de telefone temporários para receber SMS de verificação, ativações e muito mais. 
+                    Proteja sua privacidade hoje mesmo.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+                    <a href="/register" class="group inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-primary-600 hover:bg-primary-700 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-primary-600/30">
+                        <i class='bx bx-rocket text-lg sm:text-xl'></i>
+                        Começar Gratuitamente
+                        <i class='bx bx-right-arrow-alt text-lg sm:text-xl group-hover:translate-x-1 transition-transform'></i>
+                    </a>
+                    <a href="#features" class="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-surface-200 hover:bg-surface-100 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 border border-surface-100">
+                        <i class='bx bx-play-circle text-lg sm:text-xl'></i>
+                        Ver Demonstração
+                    </a>
+                </div>
+                
+                <!-- Stats Mobile Friendly -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-12 md:mt-16 pt-6 md:pt-8 border-t border-surface-200">
+                    <div class="text-center group">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-400 mb-1 group-hover:scale-110 transition-transform">50+</div>
+                        <div class="text-gray-400 text-xs sm:text-sm">Países</div>
+                    </div>
+                    <div class="text-center group">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-400 mb-1 group-hover:scale-110 transition-transform">1k+</div>
+                        <div class="text-gray-400 text-xs sm:text-sm">Números</div>
+                    </div>
+                    <div class="text-center group">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-400 mb-1 group-hover:scale-110 transition-transform">10k+</div>
+                        <div class="text-gray-400 text-xs sm:text-sm">Mensagens/Dia</div>
+                    </div>
+                    <div class="text-center group">
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-400 mb-1 group-hover:scale-110 transition-transform">24/7</div>
+                        <div class="text-gray-400 text-xs sm:text-sm">Suporte</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="py-12 md:py-20 bg-dark-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 md:mb-16">
+                <div class="inline-block px-4 py-1.5 bg-primary-600/10 rounded-full mb-4">
+                    <span class="text-primary-400 text-sm font-medium">✨ Recursos Premium</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                    Por que escolher a SMS Platform?
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+                    A melhor solução para receber SMS temporários com máxima segurança
+                </p>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                <div class="bg-dark-400 rounded-xl md:rounded-2xl p-5 md:p-8 card-hover border border-surface-200">
+                    <div class="w-12 h-12 md:w-14 md:h-14 bg-primary-600/20 rounded-lg md:rounded-xl flex items-center justify-center mb-4 md:mb-5">
+                        <i class='bx bx-shield-alt text-2xl md:text-3xl text-primary-500'></i>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Privacidade Total</h3>
+                    <p class="text-sm md:text-base text-gray-400 leading-relaxed">
+                        Seu número real permanece em sigilo absoluto. Receba SMS sem comprometer sua identidade.
+                    </p>
+                </div>
+                
+                <div class="bg-dark-400 rounded-xl md:rounded-2xl p-5 md:p-8 card-hover border border-surface-200">
+                    <div class="w-12 h-12 md:w-14 md:h-14 bg-primary-600/20 rounded-lg md:rounded-xl flex items-center justify-center mb-4 md:mb-5">
+                        <i class='bx bx-globe text-2xl md:text-3xl text-primary-500'></i>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Múltiplos Países</h3>
+                    <p class="text-sm md:text-base text-gray-400 leading-relaxed">
+                        Números em +50 países: EUA, Reino Unido, Brasil, Canadá, Alemanha e muito mais.
+                    </p>
+                </div>
+                
+                <div class="bg-dark-400 rounded-xl md:rounded-2xl p-5 md:p-8 card-hover border border-surface-200">
+                    <div class="w-12 h-12 md:w-14 md:h-14 bg-primary-600/20 rounded-lg md:rounded-xl flex items-center justify-center mb-4 md:mb-5">
+                        <i class='bx bx-bolt-circle text-2xl md:text-3xl text-primary-500'></i>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Alta Velocidade</h3>
+                    <p class="text-sm md:text-base text-gray-400 leading-relaxed">
+                        Mensagens instantâneas com monitoramento em tempo real.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-12 md:py-20 bg-dark-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 md:mb-16">
+                <div class="inline-block px-4 py-1.5 bg-accent-600/10 rounded-full mb-4">
+                    <span class="text-accent-600 text-sm font-medium">🚀 Passo a Passo</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                    Como Funciona?
+                </h2>
+                <p class="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+                    Três passos simples para começar
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+                <div class="text-center group">
+                    <div class="w-20 h-20 md:w-24 md:h-24 gradient-primary rounded-2xl flex items-center justify-center text-2xl md:text-3xl font-bold text-white mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        1
+                    </div>
+                    <i class='bx bx-user-plus text-3xl md:text-4xl text-primary-400 mb-3 block'></i>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Crie sua Conta</h3>
+                    <p class="text-sm md:text-base text-gray-400">Cadastre-se grátis em menos de 1 minuto</p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 md:w-24 md:h-24 gradient-primary rounded-2xl flex items-center justify-center text-2xl md:text-3xl font-bold text-white mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        2
+                    </div>
+                    <i class='bx bx-phone-call text-3xl md:text-4xl text-primary-400 mb-3 block'></i>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Escolha um Número</h3>
+                    <p class="text-sm md:text-base text-gray-400">Selecione o país e obtenha um número</p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 md:w-24 md:h-24 gradient-primary rounded-2xl flex items-center justify-center text-2xl md:text-3xl font-bold text-white mx-auto mb-4 md:mb-6 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                        3
+                    </div>
+                    <i class='bx bx-envelope-open text-3xl md:text-4xl text-primary-400 mb-3 block'></i>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-2">Receba SMS</h3>
+                    <p class="text-sm md:text-base text-gray-400">Use o número e receba SMS no painel</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Countries Section -->
+    <section class="py-12 md:py-20 bg-dark-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8 md:mb-12">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                    🌍 Países Disponíveis
+                </h2>
+                <p class="text-base md:text-lg text-gray-400">
+                    Números temporários em diversos países
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇺🇸 EUA</span>
+                </div>
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇬🇧 Reino Unido</span>
+                </div>
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇧🇷 Brasil</span>
+                </div>
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇨🇦 Canadá</span>
+                </div>
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇦🇺 Austrália</span>
+                </div>
+                <div class="bg-dark-400 rounded-lg p-3 md:p-4 text-center hover:bg-surface-200 transition-all duration-300 group">
+                    <i class='bx bxs-flag-alt text-2xl md:text-3xl text-primary-400 mb-1 md:mb-2 block'></i>
+                    <span class="font-semibold text-white text-sm md:text-base">🇩🇪 Alemanha</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="py-12 md:py-20 bg-dark-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8 md:mb-12">
+                <div class="inline-block px-4 py-1.5 bg-primary-600/10 rounded-full mb-4">
+                    <span class="text-primary-400 text-sm font-medium">💬 Depoimentos</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                    O que nossos usuários dizem
+                </h2>
+                <p class="text-base md:text-lg text-gray-400">
+                    Mais de 10.000 usuários satisfeitos
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+                <div class="bg-dark-500 rounded-xl p-5 md:p-6 border border-surface-200">
+                    <div class="flex items-center gap-1 mb-3">
+                        <i class='bx bxs-star text-yellow-500 text-sm md:text-base'></i>
+                        <i class='bx bxs-star text-yellow-500 text-sm md:text-base'></i>
+                        <i class='bx bxs-star text-yellow-500 text-sm md:text-base'></i>
+                        <i class='bx bxs-star text-yellow-500 text-sm md:text-base'></i>
+                        <i class='bx bxs-star text-yellow-500 text-sm md:text-base'></i>
+                    </div>
+                    <p class="text-gray-300 text-sm md:text-base mb-4">
+                        "Excelente serviço! Usei para verificar minha conta do WhatsApp Business e funcionou perfeitamente."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 bg-primary-600/20 rounded-full flex items-center justify-center">
+                            <i class='bx bx-user text-primary-400 text-sm md:text-base'></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm md:text-base">Carlos Silva</p>
+                            <p class="text-gray-500 text-xs">Usuário Premium</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-500 rounded-xl p-5 md:p-6 border border-surface-200">
+                    <div class="flex items-center gap-1 mb-3">
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                    </div>
+                    <p class="text-gray-300 text-sm md:text-base mb-4">
+                        "Muito útil para proteger minha privacidade. Recomendo para quem precisa de números temporários."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 bg-primary-600/20 rounded-full flex items-center justify-center">
+                            <i class='bx bx-user text-primary-400'></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm md:text-base">Ana Oliveira</p>
+                            <p class="text-gray-500 text-xs">Usuária há 3 meses</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-500 rounded-xl p-5 md:p-6 border border-surface-200">
+                    <div class="flex items-center gap-1 mb-3">
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                        <i class='bx bxs-star text-yellow-500'></i>
+                    </div>
+                    <p class="text-gray-300 text-sm md:text-base mb-4">
+                        "Simples, rápido e eficiente. O suporte é muito bom e sempre ajudam quando preciso."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 md:w-10 md:h-10 bg-primary-600/20 rounded-full flex items-center justify-center">
+                            <i class='bx bx-user text-primary-400'></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm md:text-base">Rafael Mendes</p>
+                            <p class="text-gray-500 text-xs">Desenvolvedor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section id="faq" class="py-12 md:py-20 bg-dark-500">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8 md:mb-12">
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                    ❓ Perguntas Frequentes
+                </h2>
+                <p class="text-base md:text-lg text-gray-400">
+                    Tire suas dúvidas sobre o serviço
+                </p>
+            </div>
+            
+            <div class="space-y-3 md:space-y-4">
+                <div class="bg-dark-400 rounded-lg md:rounded-xl p-4 md:p-6 hover:bg-surface-200 transition-all duration-300">
+                    <h3 class="text-base md:text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <i class='bx bx-question-mark text-primary-400'></i>
+                        Como funciona o serviço?
+                    </h3>
+                    <p class="text-gray-400 text-sm md:text-base">Basta criar uma conta gratuita, escolher um número do país desejado e começar a receber SMS instantaneamente.</p>
+                </div>
+                
+                <div class="bg-dark-400 rounded-lg md:rounded-xl p-4 md:p-6 hover:bg-surface-200 transition-all duration-300">
+                    <h3 class="text-base md:text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <i class='bx bx-question-mark text-primary-400'></i>
+                        É realmente gratuito?
+                    </h3>
+                    <p class="text-gray-400 text-sm md:text-base">Sim! Oferecemos um plano gratuito com recursos básicos. Também temos planos premium com benefícios adicionais.</p>
+                </div>
+                
+                <div class="bg-dark-400 rounded-lg md:rounded-xl p-4 md:p-6 hover:bg-surface-200 transition-all duration-300">
+                    <h3 class="text-base md:text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <i class='bx bx-question-mark text-primary-400'></i>
+                        Por quanto tempo o número fica ativo?
+                    </h3>
+                    <p class="text-gray-400 text-sm md:text-base">Números gratuitos ficam ativos por 7 dias. Premium tem validade de 30 dias podendo ser renovado.</p>
+                </div>
+                
+                <div class="bg-dark-400 rounded-lg md:rounded-xl p-4 md:p-6 hover:bg-surface-200 transition-all duration-300">
+                    <h3 class="text-base md:text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                        <i class='bx bx-question-mark text-primary-400'></i>
+                        Posso usar para verificar qualquer serviço?
+                    </h3>
+                    <p class="text-gray-400 text-sm md:text-base">Sim! WhatsApp, Telegram, Google, Discord, Twitter, Instagram e muitos outros serviços são compatíveis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="relative overflow-hidden py-16 md:py-24">
+        <div class="absolute inset-0 gradient-primary opacity-20"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-600/20 via-transparent to-transparent"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+            <div class="inline-flex items-center gap-2 bg-primary-600/20 backdrop-blur-sm border border-primary-600/20 rounded-full px-3 md:px-4 py-1.5 md:py-2 mb-4 md:mb-6">
+                <i class='bx bx-rocket text-primary-400 animate-pulse text-sm md:text-base'></i>
+                <span class="text-primary-400 text-xs md:text-sm font-medium">🚀 Oferta Especial</span>
+            </div>
+            
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                Pronto para proteger sua privacidade?
+            </h2>
+            <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-6 md:mb-8 max-w-2xl mx-auto">
+                Junte-se a milhares de usuários que já confiam na SMS Platform
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/register" class="group inline-flex items-center justify-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-primary-600 hover:bg-primary-700 rounded-xl font-semibold text-sm md:text-lg transition-all duration-300 transform hover:scale-105">
+                    <i class='bx bx-user-plus text-lg md:text-xl'></i>
+                    Criar Conta Grátis
+                    <i class='bx bx-right-arrow-alt text-lg md:text-xl group-hover:translate-x-1 transition-transform'></i>
+                </a>
+                <a href="#features" class="inline-flex items-center justify-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-surface-200 hover:bg-surface-100 rounded-xl font-semibold text-sm md:text-lg transition-all duration-300 border border-surface-100">
+                    <i class='bx bx-info-circle text-lg md:text-xl'></i>
+                    Saber Mais
+                </a>
+            </div>
+            
+            <div class="mt-6 md:mt-8">
+                <p class="text-gray-500 text-xs md:text-sm">
+                    🔒 Sem compromisso • Cancele quando quiser • Suporte 24/7
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-dark-500 border-t border-surface-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 text-center md:text-left">
+                <div>
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <i class='bx bx-message-square-dots text-2xl text-primary-600'></i>
+                        <span class="font-bold text-lg">SMSPlatform</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Receba SMS temporários com segurança e privacidade.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3 text-gray-300">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/" class="hover:text-primary-400 transition">Início</a></li>
+                        <li><a href="#features" class="hover:text-primary-400 transition">Funcionalidades</a></li>
+                        <li><a href="/register" class="hover:text-primary-400 transition">Começar</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3 text-gray-300">Suporte</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#faq" class="hover:text-primary-400 transition">FAQ</a></li>
+                        <li><a href="#" class="hover:text-primary-400 transition">Contato</a></li>
+                        <li><a href="#" class="hover:text-primary-400 transition">Privacidade</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3 text-gray-300">Redes Sociais</h4>
+                    <div class="flex justify-center md:justify-start gap-4">
+                        <a href="#" class="text-gray-400 hover:text-primary-400 transition text-2xl">
+                            <i class='bx bxl-twitter'></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary-400 transition text-2xl">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-primary-400 transition text-2xl">
+                            <i class='bx bxl-discord-alt'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-surface-200 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-500 text-xs md:text-sm">
+                <p>&copy; 2025 SMS Platform - Números Temporários para Receber SMS</p>
+                <p class="mt-2">
+                    Desenvolvido com <i class='bx bx-heart text-error'></i> por 
+                    <span class="text-primary-400">Nexus Platform</span> 
+                    por <span class="text-primary-400">© LucasDesigner</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Mobile Menu Script -->
+    <script>
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('mobile-menu-open');
+                }
+            });
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close mobile menu if open
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
